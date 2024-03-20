@@ -429,7 +429,7 @@ class RetinexNet(nn.Module):
         # Predict for the test images
 
         test_img_path = test_image
-        test_img_name = test_img_path.split('\\')[-1]
+        test_img_name = test_img_path.split('/')[-1]
         print('Processing ', test_img_name)
         test_low_img = Image.open(test_img_path)
         test_low_img = np.array(test_low_img, dtype="float32") / 255.0
@@ -456,13 +456,13 @@ class RetinexNet(nn.Module):
         # print(cat_image.shape)
         im = Image.fromarray(np.clip(cat_image * 255.0, 0, 255.0).astype('uint8'))
 
-        image_folder_name = test_img_path.split('\\')[-2]
-        image_name = test_img_path.split("\\")[-1]
-        folder_name = 'result\\' + image_folder_name + '\\'
+        image_folder_name = test_img_path.split('/')[-2]
+        image_name = test_img_path.split("/")[-1]
+        folder_name = 'result/' + image_folder_name + '/'
         result_path = folder_name + image_name
 
         if not os.path.exists(folder_name):
             os.makedirs(folder_name)
 
-        filepath = res_dir + '\\' + test_img_path.split('\\')[-2] + test_img_name
+        filepath = res_dir + '/' + test_img_path.split('/')[-2] + test_img_name
         im.save(folder_name + image_name)
