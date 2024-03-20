@@ -1,0 +1,4 @@
+data/
+result/low/01.jpg
+data/*/*
+*.bmp

@@ -377,7 +377,7 @@ class RetinexNet(nn.Module):
         # Predict for the test images
         for idx in range(len(test_low_data_names)):
             test_img_path  = test_low_data_names[idx]
-            test_img_name  = test_img_path.split('/')[-1]
+            test_img_name  = test_img_path.split('\\')[-1]
             print('Processing ', test_img_name)
             test_low_img   = Image.open(test_img_path)
             test_low_img   = np.array(test_low_img, dtype="float32")/255.0
@@ -402,5 +402,67 @@ class RetinexNet(nn.Module):
             cat_image = np.transpose(cat_image, (1, 2, 0))
             # print(cat_image.shape)
             im = Image.fromarray(np.clip(cat_image * 255.0, 0, 255.0).astype('uint8'))
-            filepath = res_dir + '/' + test_img_name
+            filepath = res_dir + '\\' + test_img_name
             im.save(filepath[:-4] + '.jpg')
+
+    def test(self,test_image,
+                res_dir,
+                ckpt_dir):
+        self.train_phase = 'Decom'
+        load_model_status, _ = self.load(ckpt_dir)
+        if load_model_status:
+            print(self.train_phase, "  : Model restore success!")
+        else:
+            print("No pretrained model to restore!")
+            raise Exception
+        self.train_phase = 'Relight'
+        load_model_status, _ = self.load(ckpt_dir)
+        if load_model_status:
+            print(self.train_phase, ": Model restore success!")
+        else:
+            print("No pretrained model to restore!")
+            raise Exception
+
+        # Set this switch to True to also save the reflectance and shading maps
+        save_R_L = False
+
+        # Predict for the test images
+
+        test_img_path = test_image
+        test_img_name = test_img_path.split('\\')[-1]
+        print('Processing ', test_img_name)
+        test_low_img = Image.open(test_img_path)
+        test_low_img = np.array(test_low_img, dtype="float32") / 255.0
+        test_low_img = np.transpose(test_low_img, (2, 0, 1))
+        input_low_test = np.expand_dims(test_low_img, axis=0)
+
+        self.forward(input_low_test, input_low_test)
+        result_1 = self.output_R_low
+        result_2 = self.output_I_low
+        result_3 = self.output_I_delta
+        result_4 = self.output_S
+        input = np.squeeze(input_low_test)
+        result_1 = np.squeeze(result_1)
+        result_2 = np.squeeze(result_2)
+        result_3 = np.squeeze(result_3)
+        result_4 = np.squeeze(result_4)
+        # if save_R_L:
+        #     cat_image = np.concatenate([input, result_1, result_2, result_3, result_4], axis=2)
+        # else:
+        #     cat_image = np.concatenate([input, result_4], axis=2)
+        cat_image = np.concatenate([result_4], axis=2)
+
+        cat_image = np.transpose(cat_image, (1, 2, 0))
+        # print(cat_image.shape)
+        im = Image.fromarray(np.clip(cat_image * 255.0, 0, 255.0).astype('uint8'))
+
+        image_folder_name = test_img_path.split('\\')[-2]
+        image_name = test_img_path.split("\\")[-1]
+        folder_name = 'result\\' + image_folder_name + '\\'
+        result_path = folder_name + image_name
+
+        if not os.path.exists(folder_name):
+            os.makedirs(folder_name)
+
+        filepath = res_dir + '\\' + test_img_path.split('\\')[-2] + test_img_name
+        im.save(folder_name + image_name)

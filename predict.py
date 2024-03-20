@@ -10,20 +10,20 @@ parser.add_argument('--gpu_id', dest='gpu_id',
                     default="0",
                     help='GPU ID (-1 for CPU)')
 parser.add_argument('--data_dir', dest='data_dir',
-                    default='./data/test/low/',
+                    default='.\\data\\test\\',
                     help='directory storing the test data')
 parser.add_argument('--ckpt_dir', dest='ckpt_dir', 
                     default='./ckpts/',
                     help='directory for checkpoints')
 parser.add_argument('--res_dir', dest='res_dir', 
-                    default='./results/test/low/',
+                    default='.\\results\\test\\low\\',
                     help='directory for saving the results')
 
 args = parser.parse_args()
 
 def predict(model):
 
-    test_low_data_names  = glob(args.data_dir + '/' + '*.*')
+    test_low_data_names  = glob(args.data_dir + '\\' + '*.*')
     test_low_data_names.sort()
     print('Number of evaluation images: %d' % len(test_low_data_names))
 
@@ -31,6 +31,18 @@ def predict(model):
                 res_dir=args.res_dir,
                 ckpt_dir=args.ckpt_dir)
 
+def test(model):
+    test_folder = args.data_dir
+    folder_list = os.listdir(test_folder)
+
+    for folder in folder_list:
+        file_list = glob(test_folder + folder + '/*')
+
+        for image in file_list:
+            image = os.path.normpath(image)
+            model.test(image,
+                res_dir=args.res_dir,
+                ckpt_dir=args.ckpt_dir)
 
 if __name__ == '__main__':
     if args.gpu_id != "-1":
@@ -42,7 +54,10 @@ if __name__ == '__main__':
         # Create the model
         model = RetinexNet().cuda()
         # Test the model
-        predict(model)
+        test(model)
+        # predict(model)
     else:
         # CPU mode not supported at the moment!
         raise NotImplementedError
+
+
