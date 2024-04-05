@@ -39,12 +39,18 @@ class DecomNet(nn.Module):
 
     def forward(self, input_im):
         input_max= torch.max(input_im, dim=1, keepdim=True)[0]
+        del input_max
         input_img= torch.cat((input_max, input_im), dim=1)
+        del input_im
         feats0   = self.net1_conv0(input_img)
+        del input_img
         featss   = self.net1_convs(feats0)
+        del feats0
         outs     = self.net1_recon(featss)
+        del featss
         R        = torch.sigmoid(outs[:, 0:3, :, :])
         L        = torch.sigmoid(outs[:, 3:4, :, :])
+        del outs
         return R, L
 
 class RelightNet(nn.Module):
@@ -76,22 +82,35 @@ class RelightNet(nn.Module):
     def forward(self, input_L, input_R):
         input_img = torch.cat((input_R, input_L), dim=1)
         out0      = self.net2_conv0_1(input_img)
+        del input_img
         out1      = self.relu(self.net2_conv1_1(out0))
         out2      = self.relu(self.net2_conv1_2(out1))
         out3      = self.relu(self.net2_conv1_3(out2))
 
         out3_up   = F.interpolate(out3, size=(out2.size()[2], out2.size()[3]))
+        del out3
         deconv1   = self.relu(self.net2_deconv1_1(torch.cat((out3_up, out2), dim=1)))
+        del out2
+        del out3_up
         deconv1_up= F.interpolate(deconv1, size=(out1.size()[2], out1.size()[3]))
         deconv2   = self.relu(self.net2_deconv1_2(torch.cat((deconv1_up, out1), dim=1)))
+        del out1
+        del deconv1_up
         deconv2_up= F.interpolate(deconv2, size=(out0.size()[2], out0.size()[3]))
         deconv3   = self.relu(self.net2_deconv1_3(torch.cat((deconv2_up, out0), dim=1)))
+        del deconv2_up
 
         deconv1_rs= F.interpolate(deconv1, size=(input_R.size()[2], input_R.size()[3]))
+        del deconv1
         deconv2_rs= F.interpolate(deconv2, size=(input_R.size()[2], input_R.size()[3]))
+        del deconv2
         feats_all = torch.cat((deconv1_rs, deconv2_rs, deconv3), dim=1)
+        del deconv3
+        del deconv1_rs
         feats_fus = self.net2_fusion(feats_all)
+        del feats_all
         output    = self.net2_output(feats_fus)
+        del feats_fus
         return output
 
 
