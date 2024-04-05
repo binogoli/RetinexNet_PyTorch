@@ -144,6 +144,17 @@ class RetinexNet(nn.Module):
         self.output_I_delta = I_delta_3.detach().cpu()
         self.output_S       = R_low.detach().cpu() * I_delta_3.detach().cpu()
 
+        del self.output_R_low
+        del self.output_I_low
+        del self.output_I_delta
+        del R_low
+        del I_low
+        del R_high
+        del I_high
+        del I_low_3
+        del I_high_3
+        del I_delta_3
+
     def gradient(self, input_tensor, direction):
         self.smooth_kernel_x = torch.FloatTensor([[0, 0], [-1, 1]]).view((1, 1, 2, 2)).cuda()
         self.smooth_kernel_y = torch.transpose(self.smooth_kernel_x, 2, 3)
@@ -385,19 +396,19 @@ class RetinexNet(nn.Module):
             input_low_test = np.expand_dims(test_low_img, axis=0)
 
             self.forward(input_low_test, input_low_test)
-            result_1 = self.output_R_low
-            result_2 = self.output_I_low
-            result_3 = self.output_I_delta
+            # result_1 = self.output_R_low
+            # result_2 = self.output_I_low
+            # result_3 = self.output_I_delta
             result_4 = self.output_S
             input = np.squeeze(input_low_test)
-            result_1 = np.squeeze(result_1)
-            result_2 = np.squeeze(result_2)
-            result_3 = np.squeeze(result_3)
+            # result_1 = np.squeeze(result_1)
+            # result_2 = np.squeeze(result_2)
+            # result_3 = np.squeeze(result_3)
             result_4 = np.squeeze(result_4)
-            if save_R_L:
-                cat_image= np.concatenate([input, result_1, result_2, result_3, result_4], axis=2)
-            else:
-                cat_image= np.concatenate([input, result_4], axis=2)
+            # if save_R_L:
+            #     cat_image= np.concatenate([input, result_1, result_2, result_3, result_4], axis=2)
+            # else:
+            cat_image= np.concatenate([result_4], axis=2)
 
             cat_image = np.transpose(cat_image, (1, 2, 0))
             # print(cat_image.shape)

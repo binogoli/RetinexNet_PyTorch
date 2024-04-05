@@ -10,7 +10,7 @@ parser.add_argument('--gpu_id', dest='gpu_id',
                     default="0",
                     help='GPU ID (-1 for CPU)')
 parser.add_argument('--data_dir', dest='data_dir',
-                    default='G:\\test',
+                    default='./data/test',
                     help='directory storing the test data')
 parser.add_argument('--ckpt_dir', dest='ckpt_dir', 
                     default='./ckpts/',
@@ -36,8 +36,8 @@ def test(model):
     folder_list = os.listdir(test_folder)
 
     for folder in folder_list:
-        folder_name = test_folder + '/' + folder
-        file_list = glob(folder_name + "/*")
+        folder_name = test_folder + '\\' + folder
+        file_list = glob(folder_name + "\\*")
 
         for image in file_list:
             image = os.path.normpath(image)

@@ -2,3 +2,6 @@ data/
 result/low/01.jpg
 data/*/*
 *.bmp
+*.jpg
+*.jpg
+*.bmp
