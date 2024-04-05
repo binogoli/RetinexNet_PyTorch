@@ -36,8 +36,8 @@ def test(model):
     folder_list = os.listdir(test_folder)
 
     for folder in folder_list:
-        folder_name = test_folder + '\\' + folder
-        file_list = glob(folder_name + "\\*")
+        folder_name = test_folder + '/' + folder
+        file_list = glob(folder_name + "/*")
 
         for image in file_list:
             image = os.path.normpath(image)
