@@ -3,6 +3,7 @@ import argparse
 from glob import glob
 import numpy as np
 from model import RetinexNet
+import torch
 
 parser = argparse.ArgumentParser(description='')
 
@@ -44,6 +45,7 @@ def test(model):
             model.test(image,
                 res_dir=args.res_dir,
                 ckpt_dir=args.ckpt_dir)
+            torch.cuda.empty_cache()
 
 if __name__ == '__main__':
     print('开始运行')
