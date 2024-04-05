@@ -4,6 +4,7 @@ from glob import glob
 import numpy as np
 from model import RetinexNet
 import torch
+import torch.nn as nn
 
 parser = argparse.ArgumentParser(description='')
 
@@ -54,9 +55,14 @@ if __name__ == '__main__':
         if not os.path.exists(args.res_dir):
             os.makedirs(args.res_dir)
         # Setup the CUDA env
-        os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
+        os.environ["CUDA_VISIBLE_DEVICES"] = '0,1'
         # Create the model
         model = RetinexNet().cuda()
+        device = torch.device("cuda: 0")
+        model.to(device)
+        if torch.cuda.device_count() > 1:
+            model = nn.DataParallel(model, device_ids=[0, 1])
+
         # Test the model
         test(model)
         # predict(model)
