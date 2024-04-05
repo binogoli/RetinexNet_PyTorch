@@ -60,7 +60,7 @@ if __name__ == '__main__':
         device_ids = [0, 1]  # 选中其中两块
         import torch
         # model = torch.nn.DataParallel(model, device_ids=device_ids)  # 并行使用两块
-        net = torch.nn.DataParallel(model)  # 默认使用所有的device_ids
+        model = torch.nn.DataParallel(model)  # 默认使用所有的device_ids
         model = model.cuda()
         # Test the model
         test(model)
