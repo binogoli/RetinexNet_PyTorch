@@ -421,6 +421,7 @@ class RetinexNet(nn.Module):
         result_4 = np.transpose(result_4, (1, 2, 0))
         # print(cat_image.shape)
         im = Image.fromarray(np.clip(result_4 * 255.0, 0, 255.0).astype('uint8'))
+        del result_4
 
         image_folder_name = test_img_path.split('/')[-2]
         image_name = test_img_path.split("/")[-1]
