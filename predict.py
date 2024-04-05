@@ -3,8 +3,6 @@ import argparse
 from glob import glob
 import numpy as np
 from model import RetinexNet
-import torch
-import torch.nn as nn
 
 parser = argparse.ArgumentParser(description='')
 
@@ -46,7 +44,6 @@ def test(model):
             model.test(image,
                 res_dir=args.res_dir,
                 ckpt_dir=args.ckpt_dir)
-            torch.cuda.empty_cache()
 
 if __name__ == '__main__':
     print('开始运行')
@@ -55,14 +52,16 @@ if __name__ == '__main__':
         if not os.path.exists(args.res_dir):
             os.makedirs(args.res_dir)
         # Setup the CUDA env
-        os.environ["CUDA_VISIBLE_DEVICES"] = '0,1'
+        os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
         # Create the model
         model = RetinexNet().cuda()
-        device = torch.device("cuda: 0")
-        model.to(device)
-        if torch.cuda.device_count() > 1:
-            model = nn.DataParallel(model, device_ids=[0, 1])
-
+        # 一机多卡设置
+        os.environ['CUDA_VISIBLE_DEVICES'] = '0,1'  # 设置所有可以使用的显卡，共计四块
+        device_ids = [0, 1]  # 选中其中两块
+        import torch
+        model = torch.nn.DataParallel(model, device_ids=device_ids)  # 并行使用两块
+        # net = torch.nn.Dataparallel(model)  # 默认使用所有的device_ids
+        model = model.cuda()
         # Test the model
         test(model)
         # predict(model)
