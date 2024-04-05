@@ -354,7 +354,7 @@ class RetinexNet(nn.Module):
         # Predict for the test images
         for idx in range(len(test_low_data_names)):
             test_img_path  = test_low_data_names[idx]
-            test_img_name  = test_img_path.split('\\')[-1]
+            test_img_name  = test_img_path.split('/')[-1]
             print('Processing ', test_img_name)
             test_low_img   = Image.open(test_img_path)
             test_low_img   = np.array(test_low_img, dtype="float32")/255.0
@@ -372,7 +372,7 @@ class RetinexNet(nn.Module):
             cat_image = np.transpose(cat_image, (1, 2, 0))
             # print(cat_image.shape)
             im = Image.fromarray(np.clip(cat_image * 255.0, 0, 255.0).astype('uint8'))
-            filepath = res_dir + '\\' + test_img_name
+            filepath = res_dir + '/' + test_img_name
             im.save(filepath[:-4] + '.jpg')
 
     def test(self,test_image,

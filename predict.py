@@ -46,6 +46,7 @@ def test(model):
                 ckpt_dir=args.ckpt_dir)
 
 if __name__ == '__main__':
+    print('开始运行')
     if args.gpu_id != "-1":
         # Create directories for saving the results
         if not os.path.exists(args.res_dir):
