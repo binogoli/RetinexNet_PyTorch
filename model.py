@@ -102,10 +102,11 @@ class RetinexNet(nn.Module):
         self.DecomNet  = DecomNet()
         self.RelightNet= RelightNet()
 
-    def forward(self, input_low, input_high):
+    def forward(self, input_low):
         # Forward DecompNet
         input_low = Variable(torch.FloatTensor(torch.from_numpy(input_low))).cuda()
-        R_low, I_low   = self.DecomNet(input_low)
+        R_low, I_low = self.DecomNet(input_low)
+        del input_low
 
         # Forward RelightNet
         I_delta = self.RelightNet(I_low, R_low)
@@ -113,6 +114,7 @@ class RetinexNet(nn.Module):
 
         # Other variables
         I_delta_3= torch.cat((I_delta, I_delta, I_delta), dim=1)
+        del I_delta
 
         self.output_I_delta = I_delta_3.detach().cpu()
         self.output_S       = R_low.detach().cpu() * I_delta_3.detach().cpu()
@@ -406,7 +408,8 @@ class RetinexNet(nn.Module):
         test_low_img = np.transpose(test_low_img, (2, 0, 1))
         input_low_test = np.expand_dims(test_low_img, axis=0)
 
-        self.forward(input_low_test, input_low_test)
+        self.forward(input_low_test)
+        del input_low_test
         result_4 = self.output_S
         result_4 = np.squeeze(result_4)
         # if save_R_L:
