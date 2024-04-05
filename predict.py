@@ -61,7 +61,7 @@ if __name__ == '__main__':
         import torch
         # model = torch.nn.DataParallel(model, device_ids=device_ids)  # 并行使用两块
         model = torch.nn.DataParallel(model)  # 默认使用所有的device_ids
-        model = model.cuda()
+        # model = model.cuda()
         # Test the model
         test(model)
         # predict(model)
