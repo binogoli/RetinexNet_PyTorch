@@ -39,8 +39,8 @@ class DecomNet(nn.Module):
 
     def forward(self, input_im):
         input_max= torch.max(input_im, dim=1, keepdim=True)[0]
-        del input_max
         input_img= torch.cat((input_max, input_im), dim=1)
+        del input_max
         del input_im
         feats0   = self.net1_conv0(input_img)
         del input_img
