@@ -123,7 +123,7 @@ class RetinexNet(nn.Module):
 
     def forward(self, input_low):
         # Forward DecompNet
-        input_low = Variable(torch.FloatTensor(torch.from_numpy(input_low))).cuda()
+        input_low = Variable(torch.FloatTensor(torch.from_numpy(input_low)))
         R_low, I_low = self.DecomNet(input_low)
         del input_low
 
