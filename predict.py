@@ -47,20 +47,6 @@ def test(model):
             # model.test(image,
             #     res_dir=args.res_dir,
             #     ckpt_dir=args.ckpt_dir)
-            model.train_phase = 'Decom'
-            load_model_status, _ = model.load(args.ckpt_dir)
-            if load_model_status:
-                print(model.train_phase, "  : Model restore success!")
-            else:
-                print("No pretrained model to restore!")
-                raise Exception
-            model.train_phase = 'Relight'
-            load_model_status, _ = model.load(args.ckpt_dir)
-            if load_model_status:
-                print(model.train_phase, ": Model restore success!")
-            else:
-                print("No pretrained model to restore!")
-                raise Exception
 
             # Set this switch to True to also save the reflectance and shading maps
             save_R_L = False
@@ -113,6 +99,22 @@ if __name__ == '__main__':
 
         # Create the model
         model = RetinexNet()
+
+        model.train_phase = 'Decom'
+        load_model_status, _ = model.load(args.ckpt_dir)
+        if load_model_status:
+            print(model.train_phase, "  : Model restore success!")
+        else:
+            print("No pretrained model to restore!")
+            raise Exception
+        model.train_phase = 'Relight'
+        load_model_status, _ = model.load(args.ckpt_dir)
+        if load_model_status:
+            print(model.train_phase, ": Model restore success!")
+        else:
+            print("No pretrained model to restore!")
+            raise Exception
+
         model = nn.DataParallel(model, device_ids=device_ids)
         model = model.cuda(device=device_ids[0])
         # Test the model
