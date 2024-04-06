@@ -44,9 +44,9 @@ def test(model):
 
         for image in file_list:
             image = os.path.normpath(image)
-            model.test(image,
-                res_dir=args.res_dir,
-                ckpt_dir=args.ckpt_dir)
+            # model.test(image,
+            #     res_dir=args.res_dir,
+            #     ckpt_dir=args.ckpt_dir)
             model.train_phase = 'Decom'
             load_model_status, _ = model.load(args.ckpt_dir)
             if load_model_status:
