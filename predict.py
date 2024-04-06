@@ -58,7 +58,7 @@ if __name__ == '__main__':
 
         # Create the model
         model = RetinexNet()
-        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=device_ids)
+        model = nn.DataParallel(model, device_ids=device_ids)
         model = model.cuda(device=device_ids[0])
         # Test the model
         test(model)
