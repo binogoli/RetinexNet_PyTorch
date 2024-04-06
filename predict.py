@@ -65,7 +65,6 @@ def test(model):
             test_low_img = np.array(test_low_img, dtype="float32") / 255.0
             test_low_img = np.transpose(test_low_img, (2, 0, 1))
             input_low_test = np.expand_dims(test_low_img, axis=0)
-            input_low_test.to(device)
 
             model.forward(input_low_test)
             del input_low_test
