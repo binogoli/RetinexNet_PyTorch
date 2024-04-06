@@ -54,9 +54,12 @@ if __name__ == '__main__':
         if not os.path.exists(args.res_dir):
             os.makedirs(args.res_dir)
         # Setup the CUDA env
-        os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
+        os.environ["CUDA_VISIBLE_DEVICES"] = '0,1'
         # Create the model
         model = RetinexNet().cuda()
+        import torch.nn as nn
+        model = nn.DataParallel(model)
+        model = model.cuda()
         # Test the model
         test(model)
         # predict(model)
