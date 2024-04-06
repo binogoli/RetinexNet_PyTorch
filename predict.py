@@ -56,7 +56,7 @@ def test(model):
             test_img_path = image
             test_img_name = test_img_path.split('/')[-1]
             print('Processing ', test_img_name)
-            test_low_img = Image.open(test_img_path)
+            test_low_img = Image.open(test_img_path).cuda()
             test_low_img = np.array(test_low_img, dtype="float32") / 255.0
             test_low_img = np.transpose(test_low_img, (2, 0, 1))
             input_low_test = np.expand_dims(test_low_img, axis=0)
