@@ -69,6 +69,7 @@ def test(model):
             input_low_test = np.expand_dims(test_low_img, axis=0)
 
             input_low_test = Variable(torch.FloatTensor(torch.from_numpy(input_low_test))).cuda()
+            input_low_test = input_low_test.to(device)
             result_4 = model.forward(input_low_test)
             del input_low_test
             result_4 = np.squeeze(result_4)
