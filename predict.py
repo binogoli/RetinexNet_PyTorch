@@ -2,6 +2,8 @@ import os
 import argparse
 from glob import glob
 import numpy as np
+from torch import device
+
 from model import RetinexNet
 import torch
 from PIL import Image
@@ -38,6 +40,9 @@ def test(model):
     test_folder = args.data_dir
     folder_list = os.listdir(test_folder)
 
+    model = nn.DataParallel(model, device_ids=device_ids)
+    model = model.cuda(device=device_ids[0])
+
     for folder in folder_list:
         folder_name = test_folder + '/' + folder
         file_list = glob(folder_name + "/*")
@@ -60,8 +65,8 @@ def test(model):
             test_low_img = np.array(test_low_img, dtype="float32") / 255.0
             test_low_img = np.transpose(test_low_img, (2, 0, 1))
             input_low_test = np.expand_dims(test_low_img, axis=0)
-            input_low_test.cuda()
-            
+            input_low_test.to(device)
+
             model.forward(input_low_test)
             del input_low_test
             result_4 = model.output_S
@@ -116,8 +121,7 @@ if __name__ == '__main__':
             print("No pretrained model to restore!")
             raise Exception
 
-        model = nn.DataParallel(model, device_ids=device_ids)
-        model = model.cuda(device=device_ids[0])
+
         # Test the model
         test(model)
         # predict(model)
