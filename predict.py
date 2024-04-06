@@ -3,6 +3,8 @@ import argparse
 from glob import glob
 import numpy as np
 from model import RetinexNet
+import torch
+import  torch.nn as nn
 
 parser = argparse.ArgumentParser(description='')
 
@@ -51,10 +53,13 @@ if __name__ == '__main__':
         if not os.path.exists(args.res_dir):
             os.makedirs(args.res_dir)
         # Setup the CUDA env
-        # os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_id
+        device_ids = [0, 1]
+        os.environ["CUDA_VISIBLE_DEVICES"] = [0, 1]
+
         # Create the model
-        # model = RetinexNet().cuda()
         model = RetinexNet()
+        model = nn.DataParallel(model, device_ids=device_ids)
+        model = model.cuda(device=device_ids[0])
         # Test the model
         test(model)
         # predict(model)
