@@ -66,9 +66,8 @@ def test(model):
             test_low_img = np.transpose(test_low_img, (2, 0, 1))
             input_low_test = np.expand_dims(test_low_img, axis=0)
 
-            model.forward(input_low_test)
+            result_4 = model.forward(input_low_test)
             del input_low_test
-            result_4 = model.output_S
             result_4 = np.squeeze(result_4)
             # if save_R_L:
             #     cat_image = np.concatenate([input, result_1, result_2, result_3, result_4], axis=2)

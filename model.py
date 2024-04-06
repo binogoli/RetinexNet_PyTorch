@@ -142,6 +142,8 @@ class RetinexNet(nn.Module):
         del R_low
         del I_delta_3
 
+        return self.output_S
+
     def gradient(self, input_tensor, direction):
         self.smooth_kernel_x = torch.FloatTensor([[0, 0], [-1, 1]]).view((1, 1, 2, 2)).cuda()
         self.smooth_kernel_y = torch.transpose(self.smooth_kernel_x, 2, 3)
