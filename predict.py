@@ -48,7 +48,7 @@ def test(model):
             torch.cuda.empty_cache()
 
 if __name__ == '__main__':
-    print('开始运行')
+    print('任务失败')
     if args.gpu_id != "-1":
         # Create directories for saving the results
         if not os.path.exists(args.res_dir):
