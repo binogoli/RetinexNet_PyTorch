@@ -54,7 +54,7 @@ if __name__ == '__main__':
             os.makedirs(args.res_dir)
         # Setup the CUDA env
         device_ids = [0, 1]
-        os.environ["CUDA_VISIBLE_DEVICES"] = [0, 1]
+        # os.environ["CUDA_VISIBLE_DEVICES"] = [0, 1]
 
         # Create the model
         model = RetinexNet()
