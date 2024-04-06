@@ -7,6 +7,8 @@ from torch import device
 from model import RetinexNet
 import torch
 from PIL import Image
+from torch.autograd import Variable
+
 import  torch.nn as nn
 
 parser = argparse.ArgumentParser(description='')
@@ -66,6 +68,7 @@ def test(model):
             test_low_img = np.transpose(test_low_img, (2, 0, 1))
             input_low_test = np.expand_dims(test_low_img, axis=0)
 
+            input_low = Variable(torch.FloatTensor(torch.from_numpy(input_low_test))).cuda()
             result_4 = model.forward(input_low_test)
             del input_low_test
             result_4 = np.squeeze(result_4)
